@@ -51,7 +51,9 @@ const themeToggle = document.getElementById('theme-toggle');
 // Wendet das gegebene Theme an und aktualisiert den Toggle-Button
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+  // Icon zeigt das jeweils andere Theme an
+  themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+
 }
 
 // Laedt das gespeicherte Theme oder folgt den Systemeinstellungen
@@ -97,15 +99,17 @@ input.addEventListener('input', () => {
 
 // Erstellt eine neue Aufgabe im vorgegebenen Datenmodell
 function createTask(text, priority) {
+  const openCount = tasks.filter(t => !t.isDone).length;
+
   return {
     id: crypto.randomUUID(), // uuid-v4 erzeugen
     text,
     priority,
-
     createdAt: new Date().toISOString(),
     doneAt: null,
     isDone: false,
-    order: tasks.length
+    order: openCount
+
   };
 }
 
@@ -172,6 +176,10 @@ function renderTask(task) {
       task.isDone = true;
       task.doneAt = new Date().toISOString();
       item.remove();
+
+      // Reihenfolge der verbleibenden Aufgaben aktualisieren
+      updateOrder();
+
 
       saveTasks();
 
@@ -292,9 +300,9 @@ function renderDoneTasks() {
       restore.addEventListener('click', () => {
         t.isDone = false;
         t.doneAt = null;
+        t.order = tasks.filter(task => !task.isDone).length;
 
         saveTasks();
-
 
         // Custom-Event ausloesen
         document.dispatchEvent(new CustomEvent('task:restore', { detail: t }));
