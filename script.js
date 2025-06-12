@@ -98,7 +98,6 @@ function renderTask(task) {
   item.dataset.id = task.id;
   item.tabIndex = 0;
 
-
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
   checkbox.className = 'task-checkbox';
@@ -164,6 +163,47 @@ function renderTask(task) {
 
   const span = document.createElement('span');
   span.textContent = task.text;
+  span.setAttribute('aria-label', 'Tasktext');
+
+  span.addEventListener('dblclick', () => {
+    const edit = document.createElement('input');
+    edit.type = 'text';
+    edit.value = task.text;
+    edit.maxLength = 200;
+    edit.className = 'edit-input';
+    edit.setAttribute('aria-label', 'Task bearbeiten');
+
+    const finish = () => {
+      const newText = edit.value.trim();
+      if (newText) {
+        task.text = newText;
+        saveTasks();
+        span.textContent = task.text;
+      }
+      edit.replaceWith(span);
+      span.focus();
+    };
+
+    const cancel = () => {
+      edit.replaceWith(span);
+      span.focus();
+    };
+
+    edit.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        finish();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        cancel();
+      }
+    });
+
+    span.replaceWith(edit);
+    edit.focus();
+    edit.select();
+  });
+
 
   const badge = document.createElement('span');
   badge.className = `priority-badge priority-${task.priority}`;
