@@ -22,6 +22,7 @@ function loadTasks() {
   }
 }
 
+
 // DOM-Referenzen
 const form = document.getElementById('todo-form');
 const input = document.getElementById('todo-input');
@@ -67,6 +68,7 @@ function renderTask(task) {
 
       saveTasks();
 
+
       // Custom-Event ausloesen
       document.dispatchEvent(new CustomEvent('task:done', { detail: task }));
     }
@@ -84,6 +86,7 @@ function addTask(task) {
   const item = renderTask(task);
   list.appendChild(item);
   saveTasks();
+
 }
 
 // Zeigt alle offenen Aufgaben an
@@ -122,11 +125,13 @@ function renderDoneTasks() {
 
         saveTasks();
 
+
         // Custom-Event ausloesen
         document.dispatchEvent(new CustomEvent('task:restore', { detail: t }));
       });
 
       li.append(text, created, done, restore);
+
       doneList.appendChild(li);
     });
 }
