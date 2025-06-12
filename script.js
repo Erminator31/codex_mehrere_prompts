@@ -103,6 +103,7 @@ function renderDoneTasks() {
       });
 
       li.append(text, created, done, restore);
+
       doneList.appendChild(li);
     });
 }
@@ -149,6 +150,7 @@ document.addEventListener('task:restore', () => {
 
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
+
 
 // Verhindert das Standardverhalten des Formulars und erstellt eine Aufgabe
 form.addEventListener('submit', (e) => {

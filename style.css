@@ -93,6 +93,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
   padding: 0.5rem;
   border-bottom: 1px solid #eee;
 }
@@ -112,3 +113,4 @@ body {
   color: #007bff;
   font-size: 1rem;
 }
+
