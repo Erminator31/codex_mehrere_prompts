@@ -32,7 +32,7 @@ describe("F-04: Aufgabe wiederherstellen", () => {
         cy.get("#done-list li button").click();
 
         // zurück zur offenen View
-        cy.get('a[href="#"]').click();
+        cy.get('a[href="#/"]').click();
         cy.get("#todo-list li span[aria-label='Tasktext']").should("contain.text", "Aufgabe zum Wiederherstellen");
 
         // localStorage prüfen: isDone=false, doneAt=null

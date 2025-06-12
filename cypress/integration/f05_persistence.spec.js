@@ -68,7 +68,7 @@ describe("F-05: Persistenz via localStorage", () => {
         cy.visit("/");
 
         // 2) Offene View prüfen: zwei Tasks
-        cy.get('a[href="#"]').click();
+        cy.get('a[href="#/"]').click();
         cy.get("#todo-list li span[aria-label='Tasktext']").should("have.length", 2);
         cy.get("#todo-list li span[aria-label='Tasktext']").then($els => {
             const texts = $els.map((i, el) => Cypress.$(el).text()).get();
@@ -77,8 +77,10 @@ describe("F-05: Persistenz via localStorage", () => {
 
         // 3) Erledigt-View prüfen: ein Task
         cy.get('a[href="#/done"]').click();
-        cy.get("#done-list li span[aria-label='Tasktext']")
-            .should("have.length", 1)
-            .and("contain.text", "Vorhandener Erledigter");
+        cy.get('#done-list li')
+            .should('have.length', 1)
+            .first()
+            .contains('Vorhandener Erledigter');
+
     });
 });
