@@ -17,6 +17,7 @@
   --border-color: #555;
 }
 
+
 /* Grundlegendes Layout für die To-do App */
 body {
   font-family: Arial, sans-serif;
@@ -24,12 +25,14 @@ body {
   padding: 1rem;
   background-color: var(--bg-color);
   color: var(--text-color);
+
 }
 
 .todo-app {
   max-width: 600px;
   margin: 0 auto;
   background: var(--item-bg);
+
   padding: 1rem;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -53,6 +56,7 @@ body {
   border-radius: 4px;
   background: var(--item-bg);
   color: var(--text-color);
+
 }
 
 .edit-input {
@@ -62,6 +66,7 @@ body {
   border-radius: 4px;
   background: var(--item-bg);
   color: var(--text-color);
+
 }
 
 .priority-select {
@@ -94,6 +99,7 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+
 }
 
 .add-button {
@@ -101,6 +107,7 @@ body {
   border: none;
   background-color: var(--primary-color);
   color: #fff;
+
   border-radius: 4px;
   cursor: pointer;
 }
@@ -122,6 +129,7 @@ body {
   gap: 0.5rem;
   padding: 0.5rem;
   border-bottom: 1px solid var(--border-color);
+
 }
 
 .task-item {
@@ -142,6 +150,7 @@ body {
 
 .nav-link {
   color: var(--primary-color);
+
   text-decoration: none;
 }
 
@@ -162,6 +171,7 @@ body {
   gap: 0.5rem;
   padding: 0.5rem;
   border-bottom: 1px solid var(--border-color);
+
 }
 
 .done-list time {
@@ -169,6 +179,7 @@ body {
   font-size: 0.8rem;
   color: var(--text-color);
   opacity: 0.7;
+
 }
 
 /* Button zum Wiederherstellen einer Aufgabe */
@@ -178,6 +189,7 @@ body {
   background: none;
   cursor: pointer;
   color: var(--primary-color);
+
   font-size: 1rem;
 }
 
@@ -195,16 +207,19 @@ body {
 
 .priority-medium {
   background-color: var(--badge-medium);
+
   color: #000;
 }
 
 .priority-low {
   background-color: var(--badge-low);
+
 }
 
 /* Drag-and-Drop Platzhalter */
 .placeholder {
   border: 2px dashed var(--border-color);
+
   height: 2rem;
   margin: 0.5rem 0;
 }
@@ -227,3 +242,4 @@ body {
   font-size: 1.25rem;
   color: var(--text-color);
 }
+
