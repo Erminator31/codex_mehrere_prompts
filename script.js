@@ -3,6 +3,26 @@
 // Array zum Speichern aller Aufgaben
 const tasks = [];
 
+// Speichert das Aufgaben-Array in localStorage
+function saveTasks() {
+  localStorage.setItem('todoTasks', JSON.stringify(tasks));
+}
+
+// Laedt Aufgaben aus localStorage und befuellt das Array
+function loadTasks() {
+  const data = localStorage.getItem('todoTasks');
+  if (!data) return;
+  try {
+    const parsed = JSON.parse(data);
+    if (Array.isArray(parsed)) {
+      parsed.forEach(t => tasks.push(t));
+    }
+  } catch (err) {
+    console.error('Fehler beim Laden der Aufgaben', err);
+  }
+}
+
+
 // DOM-Referenzen
 const form = document.getElementById('todo-form');
 const input = document.getElementById('todo-input');
@@ -46,6 +66,9 @@ function renderTask(task) {
       task.doneAt = new Date().toISOString();
       item.remove();
 
+      saveTasks();
+
+
       // Custom-Event ausloesen
       document.dispatchEvent(new CustomEvent('task:done', { detail: task }));
     }
@@ -62,6 +85,8 @@ function addTask(task) {
   tasks.push(task);
   const item = renderTask(task);
   list.appendChild(item);
+  saveTasks();
+
 }
 
 // Zeigt alle offenen Aufgaben an
@@ -97,6 +122,9 @@ function renderDoneTasks() {
       restore.addEventListener('click', () => {
         t.isDone = false;
         t.doneAt = null;
+
+        saveTasks();
+
 
         // Custom-Event ausloesen
         document.dispatchEvent(new CustomEvent('task:restore', { detail: t }));
@@ -149,8 +177,10 @@ document.addEventListener('task:restore', () => {
 });
 
 window.addEventListener('hashchange', handleRoute);
-window.addEventListener('load', handleRoute);
-
+window.addEventListener('load', () => {
+  loadTasks();
+  handleRoute();
+});
 
 // Verhindert das Standardverhalten des Formulars und erstellt eine Aufgabe
 form.addEventListener('submit', (e) => {
