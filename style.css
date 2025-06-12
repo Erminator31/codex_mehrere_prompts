@@ -71,6 +71,7 @@ body {
   cursor: move;
 }
 
+
 /* Abstand fuer die Checkbox */
 .task-checkbox {
   margin-right: 0.5rem;
@@ -103,6 +104,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
   padding: 0.5rem;
   border-bottom: 1px solid #eee;
 }
@@ -154,3 +156,4 @@ body {
 .task-item.dragging {
   opacity: 0.5;
 }
+
