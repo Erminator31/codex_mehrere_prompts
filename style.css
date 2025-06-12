@@ -67,6 +67,11 @@ body {
   border-bottom: 1px solid #eee;
 }
 
+.task-item {
+  cursor: move;
+}
+
+
 /* Abstand fuer die Checkbox */
 .task-checkbox {
   margin-right: 0.5rem;
@@ -140,3 +145,15 @@ body {
 .priority-low {
   background-color: #28a745;
 }
+
+/* Drag-and-Drop Platzhalter */
+.placeholder {
+  border: 2px dashed #bbb;
+  height: 2rem;
+  margin: 0.5rem 0;
+}
+
+.task-item.dragging {
+  opacity: 0.5;
+}
+

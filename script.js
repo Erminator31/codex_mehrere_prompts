@@ -3,6 +3,14 @@
 // Array zum Speichern aller Aufgaben
 const tasks = [];
 
+// Placeholder-Element fuer Drag-and-Drop
+const placeholder = document.createElement('li');
+placeholder.className = 'placeholder';
+
+let draggedItem = null;
+let keyboardMode = false;
+
+
 // Speichert das Aufgaben-Array in localStorage
 function saveTasks() {
   localStorage.setItem('todoTasks', JSON.stringify(tasks));
@@ -17,8 +25,10 @@ function loadTasks() {
     if (Array.isArray(parsed)) {
       parsed.forEach(t => {
         if (!t.priority) t.priority = 'low';
+        if (typeof t.order !== 'number') t.order = tasks.length;
         tasks.push(t);
       });
+      tasks.sort((a, b) => a.order - b.order);
 
     }
   } catch (err) {
@@ -36,6 +46,30 @@ const list = document.getElementById('todo-list');
 const doneList = document.getElementById('done-list');
 const linkOpen = document.getElementById('link-open');
 const linkDone = document.getElementById('link-done');
+
+list.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  const target = e.target.closest('.task-item');
+  if (!target || target === placeholder || target === draggedItem) return;
+  const rect = target.getBoundingClientRect();
+  const offset = e.clientY - rect.top;
+  if (offset > rect.height / 2) {
+    target.after(placeholder);
+  } else {
+    target.before(placeholder);
+  }
+});
+
+list.addEventListener('drop', (e) => {
+  e.preventDefault();
+  if (!draggedItem) return;
+  placeholder.replaceWith(draggedItem);
+  draggedItem.classList.remove('dragging');
+  updateOrder();
+  saveTasks();
+  draggedItem = null;
+});
+
 
 // Aktiviert/Deaktiviert den Button je nach Eingabefeldinhalt
 input.addEventListener('input', () => {
@@ -60,10 +94,59 @@ function createTask(text, priority) {
 function renderTask(task) {
   const item = document.createElement('li');
   item.className = 'task-item';
+  item.draggable = true;
+  item.dataset.id = task.id;
+  item.tabIndex = 0;
+
 
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
   checkbox.className = 'task-checkbox';
+
+  item.addEventListener('dragstart', (e) => {
+    draggedItem = item;
+    placeholder.style.height = `${item.offsetHeight}px`;
+    item.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  item.addEventListener('dragend', () => {
+    item.classList.remove('dragging');
+    if (placeholder.parentNode) placeholder.remove();
+    draggedItem = null;
+  });
+
+  item.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!keyboardMode) {
+        keyboardMode = true;
+        draggedItem = item;
+        placeholder.style.height = `${item.offsetHeight}px`;
+        item.after(placeholder);
+        item.classList.add('dragging');
+      } else {
+        const moveTarget = e.key === 'ArrowUp' ? placeholder.previousElementSibling : placeholder.nextElementSibling;
+        if (moveTarget && moveTarget !== item) {
+          if (e.key === 'ArrowUp') {
+            moveTarget.before(placeholder);
+          } else {
+            moveTarget.after(placeholder);
+          }
+        }
+      }
+    } else if (e.key === 'Enter' && keyboardMode) {
+      e.preventDefault();
+      placeholder.replaceWith(item);
+      item.classList.remove('dragging');
+      keyboardMode = false;
+      draggedItem = null;
+      updateOrder();
+      saveTasks();
+      item.focus();
+    }
+  });
+
 
   // Reagiert auf das Abhaken einer Aufgabe
   checkbox.addEventListener('change', () => {
@@ -96,13 +179,27 @@ function addTask(task) {
   const item = renderTask(task);
   list.appendChild(item);
   saveTasks();
+}
+
+// Aktualisiert die order-Eigenschaft aller offenen Aufgaben nach DOM-Reihenfolge
+function updateOrder() {
+  const items = Array.from(list.children);
+  items.forEach((li, idx) => {
+    const id = li.dataset.id;
+    const t = tasks.find(task => task.id === id);
+    if (t) t.order = idx;
+  });
 
 }
 
 // Zeigt alle offenen Aufgaben an
 function renderOpenTasks() {
   list.innerHTML = '';
-  tasks.filter(t => !t.isDone).forEach(t => list.appendChild(renderTask(t)));
+  tasks
+    .filter(t => !t.isDone)
+    .sort((a, b) => a.order - b.order)
+    .forEach(t => list.appendChild(renderTask(t)));
+
 }
 
 // Zeigt erledigte Aufgaben sortiert nach doneAt absteigend
