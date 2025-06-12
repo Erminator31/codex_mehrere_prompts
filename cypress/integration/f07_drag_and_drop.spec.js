@@ -56,10 +56,10 @@ describe("F-07: Drag-and-Drop Reorder (ohne Plugin)", () => {
         });
 
         // 7) Überprüfen: In der UI muss „Task B“ jetzt als erstes <li> stehen
-        cy.get("#taskList li")
+        cy.get("#todo-list li")
             .first()
             .within(() => {
-                cy.get(".text").should("contain.text", "Task B");
+                cy.get("span[aria-label='Tasktext']").should("contain.text", "Task B");
             });
 
         // 8) Überprüfen: localStorage["todoTasks"] enthält B mit order=0, A mit order=1

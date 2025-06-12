@@ -2,28 +2,30 @@ describe("F-09: Light/Dark Theme", () => {
     beforeEach(() => {
         cy.visit("/");
         cy.window().then(win => {
-            win.localStorage.removeItem("todoTheme");
+            win.localStorage.removeItem("theme");
         });
     });
 
-    it("➔ Klick auf #themeToggle schaltet Theme und speichert in localStorage", () => {
-        // Standard: kein theme vermutlich "dark"
-        cy.get("html").should("not.have.attr", "data-theme", "light");
-
-        // Klick → light
-        cy.get("#themeToggle").click();
-        cy.get("html").should("have.attr", "data-theme", "light");
-        cy.window().its("localStorage.todoTheme").should("equal", "light");
-
-        // Klick → zurück auf dark
-        cy.get("#themeToggle").click();
-        cy.get("html").should("have.attr", "data-theme", "dark");
-        cy.window().its("localStorage.todoTheme").should("equal", "dark");
+    it("➔ Klick auf #theme-toggle schaltet Theme und speichert in localStorage", () => {
+        cy.get("html")
+            .invoke("attr", "data-theme")
+            .then(start => {
+                cy.get("#theme-toggle").click();
+                cy.get("html")
+                    .invoke("attr", "data-theme")
+                    .should("not.equal", start)
+                    .then(next => {
+                        cy.window().its("localStorage.theme").should("equal", next);
+                        cy.get("#theme-toggle").click();
+                        cy.get("html").invoke("attr", "data-theme").should("equal", start);
+                        cy.window().its("localStorage.theme").should("equal", start);
+                    });
+            });
     });
 
     it("➔ Lädt dunkles Theme, wenn localStorage vorher auf ‚dark‘ gesetzt ist", () => {
         cy.window().then(win => {
-            win.localStorage.setItem("todoTheme", "dark");
+            win.localStorage.setItem("theme", "dark");
         });
         cy.visit("/");
         cy.get("html").should("have.attr", "data-theme", "dark");

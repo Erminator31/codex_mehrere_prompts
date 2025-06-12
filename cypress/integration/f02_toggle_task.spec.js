@@ -22,16 +22,16 @@ describe("F-02: Aufgabe abhaken (Toggle Done)", () => {
     });
 
     it("➔ Jede offene Aufgabe hat eine Checkbox", () => {
-        cy.get("#taskList li").should("have.length", 1);
-        cy.get("#taskList li input[type='checkbox']").should("have.length", 1);
+        cy.get("#todo-list li").should("have.length", 1);
+        cy.get("#todo-list li input[type='checkbox']").should("have.length", 1);
     });
 
     it("➔ Beim Checken wird doneAt gesetzt und li verschwindet aus offenem View", () => {
         // checken
-        cy.get("#taskList li input[type='checkbox']").check();
+        cy.get("#todo-list li input[type='checkbox']").check();
 
-        // da der Task nun erledigt ist, sollte #taskList leer sein (offene View)
-        cy.get("#taskList li").should("have.length", 0);
+        // da der Task nun erledigt ist, sollte #todo-list leer sein (offene View)
+        cy.get("#todo-list li").should("have.length", 0);
 
         // localStorage prüfen: isDone = true und doneAt ist nicht null
         cy.window().then(win => {
