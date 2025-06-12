@@ -15,17 +15,22 @@ function loadTasks() {
   try {
     const parsed = JSON.parse(data);
     if (Array.isArray(parsed)) {
-      parsed.forEach(t => tasks.push(t));
+      parsed.forEach(t => {
+        if (!t.priority) t.priority = 'low';
+        tasks.push(t);
+      });
+
     }
   } catch (err) {
     console.error('Fehler beim Laden der Aufgaben', err);
   }
 }
 
-
 // DOM-Referenzen
 const form = document.getElementById('todo-form');
 const input = document.getElementById('todo-input');
+const prioritySelect = document.getElementById('priority-select');
+
 const addButton = document.getElementById('add-button');
 const list = document.getElementById('todo-list');
 const doneList = document.getElementById('done-list');
@@ -38,11 +43,12 @@ input.addEventListener('input', () => {
 });
 
 // Erstellt eine neue Aufgabe im vorgegebenen Datenmodell
-function createTask(text) {
+function createTask(text, priority) {
   return {
     id: crypto.randomUUID(), // uuid-v4 erzeugen
     text,
-    priority: 0,
+    priority,
+
     createdAt: new Date().toISOString(),
     doneAt: null,
     isDone: false,
@@ -68,7 +74,6 @@ function renderTask(task) {
 
       saveTasks();
 
-
       // Custom-Event ausloesen
       document.dispatchEvent(new CustomEvent('task:done', { detail: task }));
     }
@@ -77,7 +82,12 @@ function renderTask(task) {
   const span = document.createElement('span');
   span.textContent = task.text;
 
-  item.append(checkbox, span);
+  const badge = document.createElement('span');
+  badge.className = `priority-badge priority-${task.priority}`;
+  badge.textContent = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+
+  item.append(checkbox, span, badge);
+
   return item;
 }
 
@@ -106,6 +116,10 @@ function renderDoneTasks() {
       li.className = 'done-item';
       const text = document.createElement('span');
       text.textContent = t.text;
+      const badge = document.createElement('span');
+      badge.className = `priority-badge priority-${t.priority}`;
+      badge.textContent = t.priority.charAt(0).toUpperCase() + t.priority.slice(1);
+
       const created = document.createElement('time');
       created.dateTime = t.createdAt;
       created.textContent = `erstellt: ${t.createdAt}`;
@@ -130,7 +144,7 @@ function renderDoneTasks() {
         document.dispatchEvent(new CustomEvent('task:restore', { detail: t }));
       });
 
-      li.append(text, created, done, restore);
+      li.append(text, badge, created, done, restore);
 
       doneList.appendChild(li);
     });
@@ -189,10 +203,14 @@ form.addEventListener('submit', (e) => {
   const text = input.value.trim();
   if (!text) return;
 
-  const task = createTask(text);
+  const priority = prioritySelect.value;
+  const task = createTask(text, priority);
+
   addTask(task);
 
   // Eingabefeld leeren und Button deaktivieren
   input.value = '';
+  prioritySelect.value = 'low';
+
   addButton.disabled = true;
 });

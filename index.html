@@ -13,9 +13,14 @@
       <a href="#/" id="link-open" class="nav-link">Offen</a>
       <a href="#/done" id="link-done" class="nav-link">Erledigt</a>
     </nav>
-
     <form id="todo-form" class="todo-form">
       <input type="text" id="todo-input" class="todo-input" maxlength="200" placeholder="Neue Aufgabe" aria-label="Neuer Task">
+      <select id="priority-select" class="priority-select" aria-label="Priorität">
+        <option value="low" selected>Niedrig</option>
+        <option value="medium">Mittel</option>
+        <option value="high">Hoch</option>
+      </select>
+
       <button type="submit" id="add-button" class="add-button" disabled>Hinzufügen</button>
     </form>
     <ul id="todo-list" class="todo-list"></ul>

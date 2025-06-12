@@ -33,6 +33,12 @@ body {
   border-radius: 4px;
 }
 
+.priority-select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .add-button {
   padding: 0.5rem 1rem;
   border: none;
@@ -112,4 +118,25 @@ body {
   cursor: pointer;
   color: #007bff;
   font-size: 1rem;
+}
+
+/* Farbige Badges fuer die Prioritaet */
+.priority-badge {
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #fff;
+}
+
+.priority-high {
+  background-color: #dc3545;
+}
+
+.priority-medium {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.priority-low {
+  background-color: #28a745;
 }
