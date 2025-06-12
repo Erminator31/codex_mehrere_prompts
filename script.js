@@ -27,12 +27,38 @@ function createTask(text) {
   };
 }
 
-// Fügt eine Aufgabe der Liste und dem DOM hinzu
+// Erstellt ein Listenelement mit Checkbox und Event-Handler
+function renderTask(task) {
+  const item = document.createElement('li');
+  item.className = 'task-item';
+
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.className = 'task-checkbox';
+
+  // Reagiert auf das Abhaken einer Aufgabe
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      task.isDone = true;
+      task.doneAt = new Date().toISOString();
+      item.remove();
+
+      // Custom-Event ausloesen
+      document.dispatchEvent(new CustomEvent('task:done', { detail: task }));
+    }
+  });
+
+  const span = document.createElement('span');
+  span.textContent = task.text;
+
+  item.append(checkbox, span);
+  return item;
+}
+
 function addTask(task) {
   tasks.push(task);
+  const item = renderTask(task);
 
-  const item = document.createElement('li');
-  item.textContent = task.text;
   list.appendChild(item);
 }
 

@@ -54,6 +54,15 @@ body {
 }
 
 .todo-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.5rem;
   border-bottom: 1px solid #eee;
 }
+
+/* Abstand fuer die Checkbox */
+.task-checkbox {
+  margin-right: 0.5rem;
+}
+
