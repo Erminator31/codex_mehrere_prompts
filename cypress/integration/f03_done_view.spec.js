@@ -45,21 +45,19 @@ describe("F-03: Erledigt-Ansicht", () => {
 
     it("➔ URL enthält #/done und Liste zeigt genau 3 erledigte Tasks", () => {
         cy.url().should("include", "#/done");
-        cy.get("#taskList li").should("have.length", 3);
+        cy.get("#done-list li").should("have.length", 3);
     });
 
-    it("➔ Jeder li hat .text, .small (erstellt+erledigt) und einen Wiederherstellen-Button", () => {
-        cy.get("#taskList li").each($li => {
-            cy.wrap($li).find(".text").should("exist");
-            cy.wrap($li).find(".small").should("exist");
-            cy.wrap($li).find("button").should("exist").and("contain.text", "Wiederherstellen");
+    it("➔ Jeder li hat Text, Zeitangaben und einen Wiederherstellen-Button", () => {
+        cy.get("#done-list li").each($li => {
+            cy.wrap($li).find("span").first().should("exist");
+            cy.wrap($li).find("time").should("have.length", 2);
+            cy.wrap($li).find("button.restore-button").should("exist");
         });
     });
 
     it("➔ Sortierung nach doneAt descending funktioniert (neuestes zuerst)", () => {
         // Das erste Element in der Liste sollte "Neue Aufgabe" sein
-        cy.get("#taskList li").first().within(() => {
-            cy.get(".text").should("contain.text", "Neue Aufgabe");
-        });
+        cy.get("#done-list li").first().should("contain.text", "Neue Aufgabe");
     });
 });

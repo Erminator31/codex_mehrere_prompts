@@ -21,20 +21,20 @@ describe("F-08: Inline-Edit", () => {
     });
 
     it("➔ Doppelklick auf .text öffnet <input> mit Werten", () => {
-        cy.get('li[data-id="edit-1"] .text').dblclick();
+        cy.get('li[data-id="edit-1"]  span[aria-label='Tasktext']').dblclick();
         cy.get('li[data-id="edit-1"] input[type="text"]')
             .should("exist")
             .and("have.value", "Alter Text");
     });
 
     it("➔ Enter speichert Text in localStorage & DOM", () => {
-        cy.get('li[data-id="edit-1"] .text').dblclick();
+        cy.get('li[data-id="edit-1"]  span[aria-label='Tasktext']').dblclick();
         cy.get('li[data-id="edit-1"] input[type="text"]')
             .clear()
             .type("Neuer Text{enter}");
 
         // DOM: Neuer Text
-        cy.get('li[data-id="edit-1"] .text').should("contain.text", "Neuer Text");
+        cy.get('li[data-id="edit-1"]  span[aria-label='Tasktext']').should("contain.text", "Neuer Text");
 
         // localStorage: geändert
         cy.window().then(win => {
@@ -44,13 +44,13 @@ describe("F-08: Inline-Edit", () => {
     });
 
     it("➔ Esc bricht Edit ab, Text bleibt unverändert", () => {
-        cy.get('li[data-id="edit-1"] .text').dblclick();
+        cy.get('li[data-id="edit-1"]  span[aria-label='Tasktext']').dblclick();
         cy.get('li[data-id="edit-1"] input[type="text"]')
             .clear()
             .type("Wrong Text{esc}");
 
         // DOM: Alter Text
-        cy.get('li[data-id="edit-1"] .text').should("contain.text", "Alter Text");
+        cy.get('li[data-id="edit-1"]  span[aria-label='Tasktext']').should("contain.text", "Alter Text");
 
         // localStorage: kein Change
         cy.window().then(win => {

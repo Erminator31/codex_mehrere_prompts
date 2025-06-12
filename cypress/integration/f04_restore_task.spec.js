@@ -23,17 +23,17 @@ describe("F-04: Aufgabe wiederherstellen", () => {
     });
 
     it("➔ In der Erledigt-Ansicht hat jeder Task einen Wiederherstellen-Button", () => {
-        cy.get("#taskList li").should("have.length", 1);
-        cy.get("#taskList li button").should("have.length", 1);
+        cy.get("#done-list li").should("have.length", 1);
+        cy.get("#done-list li button").should("have.length", 1);
     });
 
     it("➔ Nach Klick auf ‚Wiederherstellen‘ landet der Task wieder in offener Liste", () => {
         // Klick auf restore-Button
-        cy.get("#taskList li button").click();
+        cy.get("#done-list li button").click();
 
         // zurück zur offenen View
         cy.get('a[href="#"]').click();
-        cy.get("#taskList li .text").should("contain.text", "Aufgabe zum Wiederherstellen");
+        cy.get("#todo-list li span[aria-label='Tasktext']").should("contain.text", "Aufgabe zum Wiederherstellen");
 
         // localStorage prüfen: isDone=false, doneAt=null
         cy.window().then(win => {
