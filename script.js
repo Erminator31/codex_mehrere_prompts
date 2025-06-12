@@ -10,6 +10,7 @@ placeholder.className = 'placeholder';
 let draggedItem = null;
 let keyboardMode = false;
 
+
 // Speichert das Aufgaben-Array in localStorage
 function saveTasks() {
   localStorage.setItem('todoTasks', JSON.stringify(tasks));
@@ -28,6 +29,7 @@ function loadTasks() {
         tasks.push(t);
       });
       tasks.sort((a, b) => a.order - b.order);
+
     }
   } catch (err) {
     console.error('Fehler beim Laden der Aufgaben', err);
@@ -38,6 +40,7 @@ function loadTasks() {
 const form = document.getElementById('todo-form');
 const input = document.getElementById('todo-input');
 const prioritySelect = document.getElementById('priority-select');
+
 const addButton = document.getElementById('add-button');
 const list = document.getElementById('todo-list');
 const doneList = document.getElementById('done-list');
@@ -50,6 +53,7 @@ function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   // Icon zeigt das jeweils andere Theme an
   themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+
 }
 
 // Laedt das gespeicherte Theme oder folgt den Systemeinstellungen
@@ -62,6 +66,7 @@ function loadTheme() {
     applyTheme(prefersDark ? 'dark' : 'light');
   }
 }
+
 
 list.addEventListener('dragover', (e) => {
   e.preventDefault();
@@ -86,6 +91,7 @@ list.addEventListener('drop', (e) => {
   draggedItem = null;
 });
 
+
 // Aktiviert/Deaktiviert den Button je nach Eingabefeldinhalt
 input.addEventListener('input', () => {
   addButton.disabled = input.value.trim().length === 0;
@@ -94,6 +100,7 @@ input.addEventListener('input', () => {
 // Erstellt eine neue Aufgabe im vorgegebenen Datenmodell
 function createTask(text, priority) {
   const openCount = tasks.filter(t => !t.isDone).length;
+
   return {
     id: crypto.randomUUID(), // uuid-v4 erzeugen
     text,
@@ -102,6 +109,7 @@ function createTask(text, priority) {
     doneAt: null,
     isDone: false,
     order: openCount
+
   };
 }
 
@@ -161,6 +169,7 @@ function renderTask(task) {
     }
   });
 
+
   // Reagiert auf das Abhaken einer Aufgabe
   checkbox.addEventListener('change', () => {
     if (checkbox.checked) {
@@ -170,6 +179,7 @@ function renderTask(task) {
 
       // Reihenfolge der verbleibenden Aufgaben aktualisieren
       updateOrder();
+
 
       saveTasks();
 
@@ -221,11 +231,13 @@ function renderTask(task) {
     edit.select();
   });
 
+
   const badge = document.createElement('span');
   badge.className = `priority-badge priority-${task.priority}`;
   badge.textContent = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
 
   item.append(checkbox, span, badge);
+
   return item;
 }
 
@@ -244,6 +256,7 @@ function updateOrder() {
     const t = tasks.find(task => task.id === id);
     if (t) t.order = idx;
   });
+
 }
 
 // Zeigt alle offenen Aufgaben an
@@ -253,6 +266,7 @@ function renderOpenTasks() {
     .filter(t => !t.isDone)
     .sort((a, b) => a.order - b.order)
     .forEach(t => list.appendChild(renderTask(t)));
+
 }
 
 // Zeigt erledigte Aufgaben sortiert nach doneAt absteigend
@@ -269,6 +283,7 @@ function renderDoneTasks() {
       const badge = document.createElement('span');
       badge.className = `priority-badge priority-${t.priority}`;
       badge.textContent = t.priority.charAt(0).toUpperCase() + t.priority.slice(1);
+
       const created = document.createElement('time');
       created.dateTime = t.createdAt;
       created.textContent = `erstellt: ${t.createdAt}`;
@@ -294,6 +309,7 @@ function renderDoneTasks() {
       });
 
       li.append(text, badge, created, done, restore);
+
       doneList.appendChild(li);
     });
 }
@@ -362,10 +378,12 @@ form.addEventListener('submit', (e) => {
 
   const priority = prioritySelect.value;
   const task = createTask(text, priority);
+
   addTask(task);
 
   // Eingabefeld leeren und Button deaktivieren
   input.value = '';
   prioritySelect.value = 'low';
+
   addButton.disabled = true;
 });
