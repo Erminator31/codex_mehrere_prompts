@@ -126,6 +126,7 @@ document.addEventListener('task:done', () => {
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
 
+
 // Verhindert das Standardverhalten des Formulars und erstellt eine Aufgabe
 form.addEventListener('submit', (e) => {
   e.preventDefault();
