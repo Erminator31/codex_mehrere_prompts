@@ -90,6 +90,10 @@ body {
 }
 
 .done-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
   padding: 0.5rem;
   border-bottom: 1px solid #eee;
 }
@@ -99,3 +103,14 @@ body {
   font-size: 0.8rem;
   color: #666;
 }
+
+/* Button zum Wiederherstellen einer Aufgabe */
+.restore-button {
+  margin-left: auto;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #007bff;
+  font-size: 1rem;
+}
+

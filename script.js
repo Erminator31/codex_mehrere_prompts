@@ -87,7 +87,23 @@ function renderDoneTasks() {
       const done = document.createElement('time');
       done.dateTime = t.doneAt;
       done.textContent = `erledigt: ${t.doneAt}`;
-      li.append(text, created, done);
+      // Icon zum Wiederherstellen der Aufgabe
+      const restore = document.createElement('button');
+      restore.type = 'button';
+      restore.className = 'restore-button';
+      restore.title = 'Wiederherstellen';
+      restore.textContent = '\u21BA'; // Pfeilsymbol
+
+      restore.addEventListener('click', () => {
+        t.isDone = false;
+        t.doneAt = null;
+
+        // Custom-Event ausloesen
+        document.dispatchEvent(new CustomEvent('task:restore', { detail: t }));
+      });
+
+      li.append(text, created, done, restore);
+
       doneList.appendChild(li);
     });
 }
@@ -120,6 +136,15 @@ function handleRoute() {
 document.addEventListener('task:done', () => {
   if (location.hash === '#/done') {
     renderDoneTasks();
+  }
+});
+
+// Rueckmeldung bei wiederhergestellten Aufgaben
+document.addEventListener('task:restore', () => {
+  if (location.hash === '#/done') {
+    renderDoneTasks();
+  } else {
+    renderOpenTasks();
   }
 });
 
