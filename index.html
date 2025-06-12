@@ -9,11 +9,16 @@
 <body>
   <main class="todo-app">
     <h1 class="app-title">Meine Aufgaben</h1>
+    <nav class="nav">
+      <a href="#/" id="link-open" class="nav-link">Offen</a>
+      <a href="#/done" id="link-done" class="nav-link">Erledigt</a>
+    </nav>
     <form id="todo-form" class="todo-form">
       <input type="text" id="todo-input" class="todo-input" maxlength="200" placeholder="Neue Aufgabe" aria-label="Neuer Task">
       <button type="submit" id="add-button" class="add-button" disabled>Hinzufügen</button>
     </form>
     <ul id="todo-list" class="todo-list"></ul>
+    <ul id="done-list" class="done-list" hidden></ul>
   </main>
   <script src="script.js"></script>
 </body>

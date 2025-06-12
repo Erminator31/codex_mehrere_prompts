@@ -66,3 +66,37 @@ body {
   margin-right: 0.5rem;
 }
 
+/* Navigation zwischen den Routen */
+.nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.nav-link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.nav-link.active {
+  font-weight: bold;
+}
+
+/* Liste fuer erledigte Aufgaben */
+.done-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.done-list li {
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.done-list time {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+}
+
