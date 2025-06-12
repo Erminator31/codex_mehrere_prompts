@@ -58,6 +58,7 @@ function renderTask(task) {
 function addTask(task) {
   tasks.push(task);
   const item = renderTask(task);
+
   list.appendChild(item);
 }
 
