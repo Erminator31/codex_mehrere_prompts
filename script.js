@@ -3,13 +3,14 @@
 // Array zum Speichern aller Aufgaben
 const tasks = [];
 
+const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
+
 // Placeholder-Element fuer Drag-and-Drop
 const placeholder = document.createElement('li');
 placeholder.className = 'placeholder';
 
 let draggedItem = null;
 let keyboardMode = false;
-
 
 // Speichert das Aufgaben-Array in localStorage
 function saveTasks() {
@@ -40,6 +41,7 @@ function loadTasks() {
 const form = document.getElementById('todo-form');
 const input = document.getElementById('todo-input');
 const prioritySelect = document.getElementById('priority-select');
+const sortSelect = document.getElementById('sortSelect');
 
 const addButton = document.getElementById('add-button');
 const list = document.getElementById('todo-list');
@@ -47,6 +49,8 @@ const doneList = document.getElementById('done-list');
 const linkOpen = document.getElementById('link-open');
 const linkDone = document.getElementById('link-done');
 const themeToggle = document.getElementById('theme-toggle');
+const sortContainer = document.querySelector('.sort-container');
+
 
 // Wendet das gegebene Theme an und aktualisiert den Toggle-Button
 function applyTheme(theme) {
@@ -262,10 +266,16 @@ function updateOrder() {
 // Zeigt alle offenen Aufgaben an
 function renderOpenTasks() {
   list.innerHTML = '';
-  tasks
-    .filter(t => !t.isDone)
-    .sort((a, b) => a.order - b.order)
-    .forEach(t => list.appendChild(renderTask(t)));
+  let open = tasks.filter(t => !t.isDone);
+  if (sortSelect.value === 'priority') {
+    open.sort((a, b) => {
+      const diff = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
+      return diff !== 0 ? diff : a.order - b.order;
+    });
+  } else {
+    open.sort((a, b) => a.order - b.order);
+  }
+  open.forEach(t => list.appendChild(renderTask(t)));
 
 }
 
@@ -320,6 +330,7 @@ function showRoute(route) {
     form.style.display = 'none';
     list.hidden = true;
     doneList.hidden = false;
+
     linkOpen.classList.remove('active');
     linkDone.classList.add('active');
     renderDoneTasks();
@@ -327,6 +338,7 @@ function showRoute(route) {
     form.style.display = 'flex';
     list.hidden = false;
     doneList.hidden = true;
+
     linkOpen.classList.add('active');
     linkDone.classList.remove('active');
     renderOpenTasks();
@@ -368,6 +380,11 @@ themeToggle.addEventListener('click', () => {
   applyTheme(next);
   localStorage.setItem('theme', next);
 });
+
+sortSelect.addEventListener('change', () => {
+  renderOpenTasks();
+});
+
 
 // Verhindert das Standardverhalten des Formulars und erstellt eine Aufgabe
 form.addEventListener('submit', (e) => {
