@@ -19,6 +19,7 @@ function loadTasks() {
         if (!t.priority) t.priority = 'low';
         tasks.push(t);
       });
+
     }
   } catch (err) {
     console.error('Fehler beim Laden der Aufgaben', err);
@@ -29,6 +30,7 @@ function loadTasks() {
 const form = document.getElementById('todo-form');
 const input = document.getElementById('todo-input');
 const prioritySelect = document.getElementById('priority-select');
+
 const addButton = document.getElementById('add-button');
 const list = document.getElementById('todo-list');
 const doneList = document.getElementById('done-list');
@@ -46,6 +48,7 @@ function createTask(text, priority) {
     id: crypto.randomUUID(), // uuid-v4 erzeugen
     text,
     priority,
+
     createdAt: new Date().toISOString(),
     doneAt: null,
     isDone: false,
@@ -84,6 +87,7 @@ function renderTask(task) {
   badge.textContent = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
 
   item.append(checkbox, span, badge);
+
   return item;
 }
 
@@ -92,6 +96,7 @@ function addTask(task) {
   const item = renderTask(task);
   list.appendChild(item);
   saveTasks();
+
 }
 
 // Zeigt alle offenen Aufgaben an
@@ -114,6 +119,7 @@ function renderDoneTasks() {
       const badge = document.createElement('span');
       badge.className = `priority-badge priority-${t.priority}`;
       badge.textContent = t.priority.charAt(0).toUpperCase() + t.priority.slice(1);
+
       const created = document.createElement('time');
       created.dateTime = t.createdAt;
       created.textContent = `erstellt: ${t.createdAt}`;
@@ -133,11 +139,13 @@ function renderDoneTasks() {
 
         saveTasks();
 
+
         // Custom-Event ausloesen
         document.dispatchEvent(new CustomEvent('task:restore', { detail: t }));
       });
 
       li.append(text, badge, created, done, restore);
+
       doneList.appendChild(li);
     });
 }
@@ -197,10 +205,12 @@ form.addEventListener('submit', (e) => {
 
   const priority = prioritySelect.value;
   const task = createTask(text, priority);
+
   addTask(task);
 
   // Eingabefeld leeren und Button deaktivieren
   input.value = '';
   prioritySelect.value = 'low';
+
   addButton.disabled = true;
 });
