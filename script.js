@@ -1,0 +1,206 @@
+'use strict';
+
+// Array zum Speichern aller Aufgaben
+const tasks = [];
+
+// Speichert das Aufgaben-Array in localStorage
+function saveTasks() {
+  localStorage.setItem('todoTasks', JSON.stringify(tasks));
+}
+
+// Laedt Aufgaben aus localStorage und befuellt das Array
+function loadTasks() {
+  const data = localStorage.getItem('todoTasks');
+  if (!data) return;
+  try {
+    const parsed = JSON.parse(data);
+    if (Array.isArray(parsed)) {
+      parsed.forEach(t => {
+        if (!t.priority) t.priority = 'low';
+        tasks.push(t);
+      });
+    }
+  } catch (err) {
+    console.error('Fehler beim Laden der Aufgaben', err);
+  }
+}
+
+// DOM-Referenzen
+const form = document.getElementById('todo-form');
+const input = document.getElementById('todo-input');
+const prioritySelect = document.getElementById('priority-select');
+const addButton = document.getElementById('add-button');
+const list = document.getElementById('todo-list');
+const doneList = document.getElementById('done-list');
+const linkOpen = document.getElementById('link-open');
+const linkDone = document.getElementById('link-done');
+
+// Aktiviert/Deaktiviert den Button je nach Eingabefeldinhalt
+input.addEventListener('input', () => {
+  addButton.disabled = input.value.trim().length === 0;
+});
+
+// Erstellt eine neue Aufgabe im vorgegebenen Datenmodell
+function createTask(text, priority) {
+  return {
+    id: crypto.randomUUID(), // uuid-v4 erzeugen
+    text,
+    priority,
+    createdAt: new Date().toISOString(),
+    doneAt: null,
+    isDone: false,
+    order: tasks.length
+  };
+}
+
+// Erstellt ein Listenelement mit Checkbox und Event-Handler
+function renderTask(task) {
+  const item = document.createElement('li');
+  item.className = 'task-item';
+
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.className = 'task-checkbox';
+
+  // Reagiert auf das Abhaken einer Aufgabe
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      task.isDone = true;
+      task.doneAt = new Date().toISOString();
+      item.remove();
+
+      saveTasks();
+
+      // Custom-Event ausloesen
+      document.dispatchEvent(new CustomEvent('task:done', { detail: task }));
+    }
+  });
+
+  const span = document.createElement('span');
+  span.textContent = task.text;
+
+  const badge = document.createElement('span');
+  badge.className = `priority-badge priority-${task.priority}`;
+  badge.textContent = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+
+  item.append(checkbox, span, badge);
+  return item;
+}
+
+function addTask(task) {
+  tasks.push(task);
+  const item = renderTask(task);
+  list.appendChild(item);
+  saveTasks();
+}
+
+// Zeigt alle offenen Aufgaben an
+function renderOpenTasks() {
+  list.innerHTML = '';
+  tasks.filter(t => !t.isDone).forEach(t => list.appendChild(renderTask(t)));
+}
+
+// Zeigt erledigte Aufgaben sortiert nach doneAt absteigend
+function renderDoneTasks() {
+  doneList.innerHTML = '';
+  tasks
+    .filter(t => t.isDone)
+    .sort((a, b) => new Date(b.doneAt) - new Date(a.doneAt))
+    .forEach(t => {
+      const li = document.createElement('li');
+      li.className = 'done-item';
+      const text = document.createElement('span');
+      text.textContent = t.text;
+      const badge = document.createElement('span');
+      badge.className = `priority-badge priority-${t.priority}`;
+      badge.textContent = t.priority.charAt(0).toUpperCase() + t.priority.slice(1);
+      const created = document.createElement('time');
+      created.dateTime = t.createdAt;
+      created.textContent = `erstellt: ${t.createdAt}`;
+      const done = document.createElement('time');
+      done.dateTime = t.doneAt;
+      done.textContent = `erledigt: ${t.doneAt}`;
+      // Icon zum Wiederherstellen der Aufgabe
+      const restore = document.createElement('button');
+      restore.type = 'button';
+      restore.className = 'restore-button';
+      restore.title = 'Wiederherstellen';
+      restore.textContent = '\u21BA'; // Pfeilsymbol
+
+      restore.addEventListener('click', () => {
+        t.isDone = false;
+        t.doneAt = null;
+
+        saveTasks();
+
+        // Custom-Event ausloesen
+        document.dispatchEvent(new CustomEvent('task:restore', { detail: t }));
+      });
+
+      li.append(text, badge, created, done, restore);
+      doneList.appendChild(li);
+    });
+}
+
+// Navigation zwischen den Routen
+function showRoute(route) {
+  if (route === '#/done') {
+    form.style.display = 'none';
+    list.hidden = true;
+    doneList.hidden = false;
+    linkOpen.classList.remove('active');
+    linkDone.classList.add('active');
+    renderDoneTasks();
+  } else {
+    form.style.display = 'flex';
+    list.hidden = false;
+    doneList.hidden = true;
+    linkOpen.classList.add('active');
+    linkDone.classList.remove('active');
+    renderOpenTasks();
+  }
+}
+
+function handleRoute() {
+  const route = location.hash || '#/';
+  showRoute(route);
+}
+
+// Rueckmeldung bei erledigten Aufgaben
+document.addEventListener('task:done', () => {
+  if (location.hash === '#/done') {
+    renderDoneTasks();
+  }
+});
+
+// Rueckmeldung bei wiederhergestellten Aufgaben
+document.addEventListener('task:restore', () => {
+  if (location.hash === '#/done') {
+    renderDoneTasks();
+  } else {
+    renderOpenTasks();
+  }
+});
+
+window.addEventListener('hashchange', handleRoute);
+window.addEventListener('load', () => {
+  loadTasks();
+  handleRoute();
+});
+
+// Verhindert das Standardverhalten des Formulars und erstellt eine Aufgabe
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  const priority = prioritySelect.value;
+  const task = createTask(text, priority);
+  addTask(task);
+
+  // Eingabefeld leeren und Button deaktivieren
+  input.value = '';
+  prioritySelect.value = 'low';
+  addButton.disabled = true;
+});
