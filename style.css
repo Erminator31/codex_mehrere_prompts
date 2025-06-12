@@ -1,15 +1,38 @@
+:root {
+  --bg-color: #f5f5f5;
+  --text-color: #000;
+  --item-bg: #fff;
+  --primary-color: #007bff;
+  --border-color: #ccc;
+  --badge-high: #dc3545;
+  --badge-medium: #ffc107;
+  --badge-low: #28a745;
+}
+
+:root[data-theme='dark'] {
+  --bg-color: #121212;
+  --text-color: #f5f5f5;
+  --item-bg: #1e1e1e;
+  --primary-color: #66b0ff;
+  --border-color: #555;
+}
+
+
 /* Grundlegendes Layout für die To-do App */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 1rem;
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+
 }
 
 .todo-app {
   max-width: 600px;
   margin: 0 auto;
-  background: #fff;
+  background: var(--item-bg);
+
   padding: 1rem;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -29,28 +52,38 @@ body {
 .todo-input {
   flex: 1;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
+  background: var(--item-bg);
+  color: var(--text-color);
+
 }
 
 .edit-input {
   flex: 1;
   padding: 0.25rem 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
+  background: var(--item-bg);
+  color: var(--text-color);
+
 }
 
 .priority-select {
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
+  background: var(--item-bg);
+  color: var(--text-color);
+
 }
 
 .add-button {
   padding: 0.5rem 1rem;
   border: none;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--primary-color);
+  color: #fff;
+
   border-radius: 4px;
   cursor: pointer;
 }
@@ -71,7 +104,8 @@ body {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
+
 }
 
 .task-item {
@@ -92,7 +126,8 @@ body {
 }
 
 .nav-link {
-  color: #007bff;
+  color: var(--primary-color);
+
   text-decoration: none;
 }
 
@@ -111,15 +146,17 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-
   padding: 0.5rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
+
 }
 
 .done-list time {
   display: block;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--text-color);
+  opacity: 0.7;
+
 }
 
 /* Button zum Wiederherstellen einer Aufgabe */
@@ -128,7 +165,8 @@ body {
   border: none;
   background: none;
   cursor: pointer;
-  color: #007bff;
+  color: var(--primary-color);
+
   font-size: 1rem;
 }
 
@@ -141,26 +179,44 @@ body {
 }
 
 .priority-high {
-  background-color: #dc3545;
+  background-color: var(--badge-high);
 }
 
 .priority-medium {
-  background-color: #ffc107;
+  background-color: var(--badge-medium);
+
   color: #000;
 }
 
 .priority-low {
-  background-color: #28a745;
+  background-color: var(--badge-low);
+
 }
 
 /* Drag-and-Drop Platzhalter */
 .placeholder {
-  border: 2px dashed #bbb;
+  border: 2px dashed var(--border-color);
+
   height: 2rem;
   margin: 0.5rem 0;
 }
 
 .task-item.dragging {
   opacity: 0.5;
+}
+
+/* Header mit Theme-Toggle */
+.app-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.theme-toggle {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: var(--text-color);
 }
 

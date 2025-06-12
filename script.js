@@ -46,6 +46,25 @@ const list = document.getElementById('todo-list');
 const doneList = document.getElementById('done-list');
 const linkOpen = document.getElementById('link-open');
 const linkDone = document.getElementById('link-done');
+const themeToggle = document.getElementById('theme-toggle');
+
+// Wendet das gegebene Theme an und aktualisiert den Toggle-Button
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+}
+
+// Laedt das gespeicherte Theme oder folgt den Systemeinstellungen
+function loadTheme() {
+  const stored = localStorage.getItem('theme');
+  if (stored === 'light' || stored === 'dark') {
+    applyTheme(stored);
+  } else {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(prefersDark ? 'dark' : 'light');
+  }
+}
+
 
 list.addEventListener('dragover', (e) => {
   e.preventDefault();
@@ -330,7 +349,16 @@ document.addEventListener('task:restore', () => {
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', () => {
   loadTasks();
+  loadTheme();
   handleRoute();
+});
+
+// Wechselt zwischen hellem und dunklem Theme
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('theme', next);
 });
 
 // Verhindert das Standardverhalten des Formulars und erstellt eine Aufgabe
